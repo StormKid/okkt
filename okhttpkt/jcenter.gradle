@@ -1,0 +1,87 @@
+
+def binaryUser = "stokid"
+def binaryApiKey = "b2cbe912397d9bdf2386ceda8e67f7de0b7f7859"
+version = public_version // build构建的version一定需要指明
+group = "com.stormkid"
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'arr'
+                description 'mongodb for kotlin'
+                url "https://github.com/StormKid/mongodb-android"
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer { // 开发者信息
+                        id "com.stormkid.mongo"
+                        name 'stormkid'
+                        email 'stokid@126.com'
+                    }
+                }
+                scm {
+                    connection "https://github.com/StormKid/mongodb-android.git"
+                    developerConnection "https://github.com/StormKid/mongodb-android.git"
+                    url "https://github.com/StormKid/mongodb-android"
+                }
+            }
+        }
+
+    }
+}
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    failOnError false //必须添加以免出错
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+}
+
+
+bintray {
+    user = binaryUser
+    key = binaryApiKey
+    pkg {
+        repo = 'library'//自己创建的仓库名字
+        name = 'okhttpdemo'//上传到JCenter的名字,最终引用的名字
+        websiteUrl = "https://github.com/StormKid/mongodb-android"
+        vcsUrl = "https://github.com/StormKid/mongodb-android.git"
+        licenses = ['Apache-2.0']//不能随便写，只能是仓库创建时选择的license type
+        publish = true // 是否是公开项目，公开别人可以引用
+
+        version {
+            name = public_version
+            desc = 'mongodb for kt.'//描述，自己定义
+            released = new Date()
+            vcsTag = "v$public_version"
+            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
+        }
+    }
+    configurations = ['archives']
+}
