@@ -15,19 +15,19 @@ import java.lang.reflect.ParameterizedType
 
 
 /**
-
+okhttp 请求回调
 @author ke_li
 @date 2018/5/25
  */
 class OkCallback<T>(private val callbackRule: CallbackRule<T>, private val need: CallbackNeed) : Callback {
 
 
-    override fun onFailure(call: Call, e: IOException) {
+    override fun onFailure(call: Call?, e: IOException) {
         runBlocking { launch(Dispatchers.Main){ callbackRule.onFailed(need.err_msg)}}
         call!!.cancel()
     }
 
-    override fun onResponse(call: Call, response: Response) {
+    override fun onResponse(call: Call?, response: Response?) {
         if (null != response) {
             if (response.isSuccessful) {
                 if (null == response.body()) {
