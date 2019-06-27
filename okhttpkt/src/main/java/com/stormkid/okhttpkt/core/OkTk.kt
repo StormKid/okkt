@@ -267,6 +267,34 @@ class OkTk private constructor() {
             return request
         }
 
+        ////////////////////////////////请求到 String ////////////////////////////////////////
+        fun getString(call: CallbackRule<String>){
+            val request = init().build()
+            getHttpClient().newCall(request).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        }
+
+        fun  postString(call: CallbackRule<String>) {
+            val request = init()
+            val requestBody = FormBody.Builder().apply {
+                body.forEach { this.add(it.key, it.value) }
+            }.build()
+            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        }
+
+        fun  postStringJson(call: CallbackRule<String>) {
+            val request = init()
+            val json = Gson().toJson(body)
+            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
+            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        }
+
+        fun postStringJson(json: String, call: CallbackRule<String>) {
+            val request = init()
+            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
+            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        }
+
+        ////////////////////////////////////////////普通请求///////////////////////////////////////////////////////
 
         fun <T> get(call: CallbackRule<T>) {
             val request = init().build()
