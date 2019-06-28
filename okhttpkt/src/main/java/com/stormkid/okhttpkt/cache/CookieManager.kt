@@ -2,7 +2,9 @@ package com.stormkid.okhttpkt.cache
 
 import okhttp3.Cookie
 import okhttp3.HttpUrl
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.HashMap
 
 /**
 操作cookie类
@@ -44,6 +46,7 @@ class CookieManager private constructor() : CookieRule {
     }
 
     override fun remove(httpUrl: HttpUrl, cookie: Cookie): Boolean {
+
     }
 
     override fun removeAll(): Boolean {
@@ -56,13 +59,23 @@ class CookieManager private constructor() : CookieRule {
     }
 
 
+    private fun getCookies(hostKey:String){
+    }
 
-    fun doHost(httpUrl: HttpUrl) =
+    private fun removeCookie(cookie: Cookie){
+        val name = doName(cookie)
+        cookies.forEach {
+
+        }
+    }
+
+
+    private fun doHost(httpUrl: HttpUrl) =
         if (httpUrl.host().startsWith(COOKIE_HOST_KEY)) httpUrl.host()
         else COOKIE_HOST_KEY + httpUrl.host()
 
 
-    fun doName(cookie: Cookie?)=
+    private fun doName(cookie: Cookie?)=
         if (cookie==null) null
         else cookie.name() + cookie.domain()
 }
