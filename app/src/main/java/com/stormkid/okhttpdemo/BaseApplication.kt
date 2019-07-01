@@ -11,6 +11,6 @@ import com.stormkid.okhttpkt.core.Okkt
 class BaseApplication:Application (){
     override fun onCreate() {
         super.onCreate()
-        Okkt.instance.setBase("http://xxxx.com").isLogShow(true).isNeedCookie(false)
+        Okkt.instance.setBase("http://xxxx.com").setClientType(Okkt.FACTORY_CLIENT).isLogShow(true).setErr("xxxx").setNetClientType(Okkt.HTTPS_TYPE).setTimeOut(1000L).isNeedCookie(false).initHttpClient()
     }
 }
