@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.stormkid.okhttpkt.core.OkTk
+import com.stormkid.okhttpkt.core.Okkt
 import com.stormkid.okhttpkt.rule.DownLoadRule
 
 
@@ -33,7 +33,7 @@ class DownloadCallback(private val downLoadRule: DownLoadRule) : BroadcastReceiv
             val uriForDownloadedFile = manager.getUriForDownloadedFile(ID)
             downLoadRule.onFinished(uriForDownloadedFile,this)
         } else {
-            OkTk.instance.checkId(ID, context!!)
+            Okkt.instance.checkId(ID, context!!)
         }
     }
 }

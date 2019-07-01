@@ -1,6 +1,6 @@
 package com.stormkid.okhttpkt.utils
 
-import com.stormkid.okhttpkt.cache.FileCache
+import android.util.Log
 import com.stormkid.okhttpkt.rule.ProGressRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,23 +58,27 @@ class FileResponseBody(private val responseBody: ResponseBody,private val fileCa
      * 直传下载
      */
     private fun writeFile(inputStream: InputStream) {
-        val byte = ByteArray(2048)
-        val path = FileCache.getExternalPath(fileCallbackNeed.context) + "/" + fileCallbackNeed.selfPath
-        val fileOutputStream = FileOutputStream(path)
-        var len = 0
-        var current = 0L
-        runBlocking {
-            while (true) {
-                len = inputStream.read(byte)
-                if (len == -1) {
-                    inputStream.close()
-                    fileOutputStream.close()
-                    launch(Dispatchers.Main) { proGressRule.onOpenFile(File(path)) }
-                    return@runBlocking
+        try {
+            val byte = ByteArray(2048)
+            val path = fileCallbackNeed.context.externalCacheDir?.absolutePath + "/" + fileCallbackNeed.selfPath
+            val fileOutputStream = FileOutputStream(path)
+            var len: Int
+            var current = 0L
+            runBlocking {
+                while (true) {
+                    len = inputStream.read(byte)
+                    if (len == -1) {
+                        inputStream.close()
+                        fileOutputStream.close()
+                        launch(Dispatchers.Main) { proGressRule.onOpenFile(File(path)) }
+                        return@runBlocking
+                    }
+                    fileOutputStream.write(byte, 0, len)
+                    current += len
                 }
-                fileOutputStream.write(byte, 0, len)
-                current += len
             }
+        }catch (e:Exception){
+            Log.w("okktx","Your file permission or file path need to look out or otherwise")
         }
 
     }

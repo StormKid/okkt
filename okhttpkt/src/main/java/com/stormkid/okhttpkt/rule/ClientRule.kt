@@ -12,4 +12,5 @@ interface ClientRule {
     fun getCustomnClient():OkHttpClient.Builder
     fun setTimeOut(time:Long)
     fun isLogShow(boolean: Boolean)
+    fun isNeedCookie(isNeed:Boolean)
 }

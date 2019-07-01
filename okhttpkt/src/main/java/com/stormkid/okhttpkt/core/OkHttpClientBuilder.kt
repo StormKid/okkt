@@ -1,5 +1,7 @@
 package com.stormkid.okhttpkt.core
 
+import com.stormkid.okhttpkt.cache.CookieCaches
+import com.stormkid.okhttpkt.cache.CookieManager
 import com.stormkid.okhttpkt.rule.ClientRule
 import com.stormkid.okhttpkt.rule.FactoryRule
 import com.stormkid.okhttpkt.utils.HttpsUtils
@@ -16,12 +18,18 @@ import javax.net.ssl.X509TrustManager
  */
 class OkHttpClientBuilder private constructor() : ClientRule {
 
+
     private val logBody = HttpLoggingInterceptor.Level.BODY
     private val logNone = HttpLoggingInterceptor.Level.NONE
     /**
      * 超时
      */
     private var ERR_TIME = 5000L
+
+    /**
+     * 是否需要处理cookie
+     */
+    private var IS_NEED_COOKIE = false
 
     companion object {
         private val httpClient: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
@@ -30,7 +38,15 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         private val instance: OkHttpClientBuilder by lazy { OkHttpClientBuilder() }
     }
 
+    /**
+     * 自定义httpclient 时调用的类，以及可以作为mvp 参考
+     */
     object Builder : FactoryRule {
+        override fun setCookie(isNeed: Boolean) {
+            if (isNeed)
+            httpClient.cookieJar(CookieCaches(CookieManager.instance))
+        }
+
         override fun setTimeOut(time: Long) {
             httpClient.readTimeout(time, TimeUnit.MILLISECONDS)
             httpClient.writeTimeout(time, TimeUnit.MILLISECONDS)
@@ -98,6 +114,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
             this.addInterceptor(HttpLoggingInterceptor().setLevel(logBody))
         } else this.addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
 
+        if (IS_NEED_COOKIE)  httpClient.cookieJar(CookieCaches(CookieManager.instance))
         this.connectTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
         this.readTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
         this.writeTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
@@ -131,6 +148,13 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      */
     override fun setTimeOut(time: Long) {
         ERR_TIME = time
+    }
+
+    /**
+     * 是否需要cookie
+     */
+    override fun isNeedCookie(isNeed: Boolean) {
+        IS_NEED_COOKIE = isNeed
     }
 
 }
