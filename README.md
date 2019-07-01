@@ -23,7 +23,7 @@
 class BaseApplication:Application (){
     override fun onCreate() {
         super.onCreate()
-        Okkt.instance.setBase("http://xxxx.com").isLogShow(true).isNeedCookie(false).initHttpClient()
+        Okkt.instance.setBase("http://xxxx.com").initHttpClient()
     }
 }
     
