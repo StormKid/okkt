@@ -13,6 +13,56 @@
 
 **4、纯粹的kotlin代码，利用ktx语法糖结合代码达成十分简约的书写方式**
 
+**5、拥有工厂模式与单例模式的config方式，甚至扩展了一个接口用来自定义自己的client做自定义解决方式**
+
 ## 简单案例：
 
-### 1、
+### 1、全局注册
+
+```kotlin
+class BaseApplication:Application (){
+    override fun onCreate() {
+        super.onCreate()
+        Okkt.instance.setBase("http://xxxx.com").isLogShow(true).isNeedCookie(false).initHttpClient()
+    }
+}
+    
+```
+
+### 2、get
+```kotlin
+   fun doGet(){
+         Okkt.instance.Builder().setUrl("/part").get(object:CallbackRule<YourDataClass>{
+            override suspend fun onSuccess(entity: YourDataClass, flag: String) {
+                
+            }
+
+            override suspend fun onFailed(error: String) {
+            }
+
+        })
+  
+   }
+  
+```
+
+### 3、implement get
+```kotlin
+  class MainActivity : AppCompatActivity(),CallbackRule<YourDataClass> ,Serializable{
+    override suspend fun onSuccess(entity: YourDataClass, flag: String) {
+    }
+
+    override suspend fun onFailed(error: String) {
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        Okkt.instance.Builder().setUrl("/part").get(this)
+    }
+}
+```
+> **注意：任何实现CallbackRule接口类必须把CallbackRule接口当作第一个接口来实现！注意书写顺序，切勿写成:"
+```class Main: Serilizable,CallbackRule<YourDataClass>```"**
+
+
