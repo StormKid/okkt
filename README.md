@@ -17,6 +17,11 @@
 
 ## 简单案例：
 
+### 使用前提导入：
+```gradle
+implementation 'com.stormkid:okhttpkt:1.0.2.1'
+```
+
 ### 1、全局注册
 
 ```kotlin
