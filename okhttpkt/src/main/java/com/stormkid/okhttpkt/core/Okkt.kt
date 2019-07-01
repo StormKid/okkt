@@ -148,8 +148,9 @@ class Okkt private constructor() {
     /**
      * 是否需要cookie
      */
-    fun isNeedCookie(isNeed:Boolean){
+    fun isNeedCookie(isNeed:Boolean): Okkt {
         OkHttpClientBuilder.Builder.build().isNeedCookie(isNeed)
+        return this
     }
 
 
