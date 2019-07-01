@@ -71,4 +71,4 @@ class BaseApplication:Application (){
 ```class Main: Serilizable,CallbackRule<YourDataClass>```"**
 
 
-# [API](https://github.com/StormKid/okhttpkt/wiki)
+# [WIKI](https://github.com/StormKid/okhttpkt/wiki)
