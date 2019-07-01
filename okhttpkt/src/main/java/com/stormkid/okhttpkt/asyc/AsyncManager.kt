@@ -1,8 +1,8 @@
+@file:Suppress("DeferredResultUnused")
+
 package com.stormkid.okhttpkt.asyc
 
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 /**
  *
@@ -15,8 +15,16 @@ object AsyncManager {
     fun runLazy(function:()->Unit){
       runBlocking {
           async(start = CoroutineStart.LAZY) {
-              function
+              function.invoke()
           }
       }
+    }
+
+    fun runPost(function: () -> Unit){
+        runBlocking {
+            launch(Dispatchers.Unconfined){
+                function.invoke()
+            }
+        }
     }
 }

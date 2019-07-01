@@ -2,9 +2,7 @@ package com.stormkid.okhttpkt.cache
 
 import okhttp3.Cookie
 import okhttp3.HttpUrl
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.HashMap
 
 /**
 操作cookie类
@@ -25,8 +23,8 @@ class CookieManager private constructor() : CookieRule {
     override fun add(httpUrl: HttpUrl, cookie: Cookie) {
         if (!cookie.persistent()) return
         val hostKey = doHost(httpUrl)
-        val nameKey = doName(cookie)?:return
-        if (!cookies.containsKey(hostKey)){
+        val nameKey = doName(cookie) ?: return
+        if (!cookies.containsKey(hostKey)) {
             cookies[hostKey] = ConcurrentHashMap()
         }
         cookies[hostKey]?.set(nameKey, cookie)
@@ -35,18 +33,24 @@ class CookieManager private constructor() : CookieRule {
     override fun add(httpUrl: HttpUrl, cookies: MutableList<Cookie>) {
         cookies.forEach {
             if (!isCookieTimeout(it))
-                add(httpUrl,it)
+                add(httpUrl, it)
         }
     }
 
     override fun get(httpUrl: HttpUrl): MutableList<Cookie> {
+        return getCookies(doHost(httpUrl))
     }
 
     override fun getCookies(): MutableList<Cookie> {
+        val result = arrayListOf<Cookie>()
+        cookies.keys.forEach {
+            result.addAll(getCookies(it))
+        }
+        return result
     }
 
     override fun remove(httpUrl: HttpUrl, cookie: Cookie): Boolean {
-
+        return removeCookie(doHost(httpUrl),cookie)
     }
 
     override fun removeAll(): Boolean {
@@ -59,14 +63,33 @@ class CookieManager private constructor() : CookieRule {
     }
 
 
-    private fun getCookies(hostKey:String){
+    private fun getCookies(hostKey: String): ArrayList<Cookie> {
+        val result = arrayListOf<Cookie>()
+        if (cookies.containsKey(hostKey)) {
+            val currentCookie = this.cookies[hostKey]?.values
+            currentCookie?.forEach {
+                if (isCookieTimeout(it)){
+                    removeCookie(hostKey,it)
+                }else
+                    result.add(it)
+            }
+        }
+        return result
     }
 
-    private fun removeCookie(cookie: Cookie){
+    private fun removeCookie(hostKey: String, cookie: Cookie) = let {
         val name = doName(cookie)
-        cookies.forEach {
-
-        }
+        val back =
+            try {
+                if (this.cookies.containsKey(hostKey) && this.cookies[hostKey]!!.containsKey(name!!)) {
+                    // 从内存中移除httpUrl对应的cookie
+                    this.cookies[hostKey]?.remove(name)
+                    true
+                } else false
+            } catch (e: Exception) {
+                false
+            }
+        back
     }
 
 
@@ -75,7 +98,7 @@ class CookieManager private constructor() : CookieRule {
         else COOKIE_HOST_KEY + httpUrl.host()
 
 
-    private fun doName(cookie: Cookie?)=
-        if (cookie==null) null
+    private fun doName(cookie: Cookie?) =
+        if (cookie == null) null
         else cookie.name() + cookie.domain()
 }
