@@ -11,6 +11,8 @@
             android:name=".BaseApplication"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
+            android:usesCleartextTraffic="true"
+            android:networkSecurityConfig="@xml/net_config"
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.stormkid.okhttpdemo.MainActivity">
             <intent-filter>

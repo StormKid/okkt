@@ -100,24 +100,24 @@ class OkHttpClientBuilder private constructor() : ClientRule {
          * 清理interceptors 防止重复添加
          */
         this.interceptors().clear()
-        if (heads.size != 0) this.addInterceptor {
+        if (heads.size != 0) addInterceptor {
             val myhead = Headers.of(heads)
             val builder = it.request().newBuilder()
             it.proceed(builder.headers(myhead).build())
         }
 
         if (showLog) {
-            this.addInterceptor {
+            addInterceptor {
                 android.util.Log.i("okhttpUrl", it.request().url().toString())
                 it.proceed(it.request())
             }
-            this.addInterceptor(HttpLoggingInterceptor().setLevel(logBody))
-        } else this.addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
+            addInterceptor(HttpLoggingInterceptor().setLevel(logBody))
+        } else addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
 
         if (IS_NEED_COOKIE)  httpClient.cookieJar(CookieCaches(CookieManager.instance))
-        this.connectTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
-        this.readTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
-        this.writeTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
+        connectTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
+        readTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
+        writeTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
     }
 
     /**
@@ -125,8 +125,8 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      */
     override fun getHttpsClient() = httpClient.apply {
         getHttpClient().apply {
-            val ssl = HttpsUtils.SSLParams()
-            this.sslSocketFactory(ssl.sSLSocketFactory, ssl.trustManager)
+            val ssl = HttpsUtils.getSslSocketFactory()
+            sslSocketFactory(ssl.sSLSocketFactory, ssl.trustManager)
         }
     }
 

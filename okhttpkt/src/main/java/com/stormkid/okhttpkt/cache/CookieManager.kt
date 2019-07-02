@@ -62,6 +62,16 @@ class CookieManager private constructor() : CookieRule {
         return cookie.expiresAt() < System.currentTimeMillis()
     }
 
+    /**
+     * 返回cookie
+     */
+    fun getCookie(name: String): Cookie? {
+        val cookies = getCookies()
+        cookies.forEach {
+            if (it.name() == name) return it
+        }
+        return null
+    }
 
     private fun getCookies(hostKey: String): ArrayList<Cookie> {
         val result = arrayListOf<Cookie>()
@@ -101,4 +111,6 @@ class CookieManager private constructor() : CookieRule {
     private fun doName(cookie: Cookie?) =
         if (cookie == null) null
         else cookie.name() + cookie.domain()
+
+
 }
