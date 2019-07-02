@@ -20,7 +20,7 @@
 
 ### 使用前提导入：
 ```gradle
-implementation 'com.stormkid:okhttpkt:1.0.3'
+implementation 'com.stormkid:okhttpkt:1.0.3.1'
 ```
 
 ### 1、全局注册
