@@ -1,6 +1,6 @@
 package com.stormkid.okhttpkt.core
 
-import com.stormkid.okhttpkt.rule.CallbackRule
+import com.stormkid.okhttpkt.rule.StringCallback
 import com.stormkid.okhttpkt.utils.CallbackNeed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ okhttp String请求回调
 @author ke_li
 @date 2018/5/25
  */
-class OkStringCallback(private val callbackRule: CallbackRule<String>, private val need: CallbackNeed) : Callback {
+class OkStringCallback(private val callbackRule: StringCallback, private val need: CallbackNeed) : Callback {
 
 
     override fun onFailure(call: Call?, e: IOException) {

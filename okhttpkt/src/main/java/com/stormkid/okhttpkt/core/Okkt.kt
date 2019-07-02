@@ -7,10 +7,7 @@ import android.net.Uri
 import android.os.Environment
 import com.google.gson.Gson
 import com.stormkid.okhttpkt.asyc.DownloadCallback
-import com.stormkid.okhttpkt.rule.CallbackRule
-import com.stormkid.okhttpkt.rule.ClientRule
-import com.stormkid.okhttpkt.rule.DownLoadRule
-import com.stormkid.okhttpkt.rule.ProGressRule
+import com.stormkid.okhttpkt.rule.*
 import com.stormkid.okhttpkt.utils.CallbackNeed
 import com.stormkid.okhttpkt.utils.FileCallbackNeed
 import com.stormkid.okhttpkt.utils.FileResponseBody
@@ -277,12 +274,12 @@ class Okkt private constructor() {
         }
 
         ////////////////////////////////请求到 String ////////////////////////////////////////
-        fun getString(call: CallbackRule<String>){
+        fun getString(call: StringCallback){
             val request = init().build()
             getHttpClient().newCall(request).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
         }
 
-        fun  postString(call: CallbackRule<String>) {
+        fun  postString(call: StringCallback) {
             val request = init()
             val requestBody = FormBody.Builder().apply {
                 body.forEach { this.add(it.key, it.value) }
@@ -290,14 +287,14 @@ class Okkt private constructor() {
             getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
         }
 
-        fun  postStringJson(call: CallbackRule<String>) {
+        fun  postStringJson(call: StringCallback) {
             val request = init()
             val json = Gson().toJson(body)
             val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
             getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
         }
 
-        fun postStringJson(json: String, call: CallbackRule<String>) {
+        fun postStringJson(json: String, call: StringCallback) {
             val request = init()
             val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
             getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))

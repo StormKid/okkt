@@ -5,10 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import com.stormkid.okhttpkt.core.Okkt
 import com.stormkid.okhttpkt.rule.CallbackRule
 import com.stormkid.okhttpkt.rule.ProGressRule
+import com.stormkid.okhttpkt.rule.StringCallback
 import java.io.File
 
-class MainActivity : AppCompatActivity(),CallbackRule<Any> {
-    override suspend fun onSuccess(entity: Any, flag: String) {
+class MainActivity : AppCompatActivity(),StringCallback {
+    override suspend fun onSuccess(entity: String, flag: String) {
     }
 
     override suspend fun onFailed(error: String) {
