@@ -63,14 +63,14 @@ class CookieManager private constructor() : CookieRule {
     }
 
     /**
-     * 返回cookie
+     * 返回cookievalue
      */
-    fun getCookie(name: String): Cookie? {
+    fun getCookieValue(name: String): String {
         val cookies = getCookies()
         cookies.forEach {
-            if (it.name() == name) return it
+            if (it.name() == name) return it.value()
         }
-        return null
+        return ""
     }
 
     private fun getCookies(hostKey: String): ArrayList<Cookie> {
