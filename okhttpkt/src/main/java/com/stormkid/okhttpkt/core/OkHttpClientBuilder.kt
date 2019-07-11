@@ -31,6 +31,11 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      */
     private var IS_NEED_COOKIE = false
 
+    /**
+     * 是否需要重定向
+     */
+    private var IS_REDIRECT_ALLOW = true
+
     companion object {
         private val httpClient: OkHttpClient.Builder by lazy { OkHttpClient.Builder() }
         private val heads = hashMapOf<String, String>()
@@ -42,6 +47,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      * 自定义httpclient 时调用的类，以及可以作为mvp 参考
      */
     object Builder : FactoryRule {
+
         override fun setCookie(isNeed: Boolean) {
             if (isNeed)
             httpClient.cookieJar(CookieCaches(CookieManager.instance))
@@ -81,6 +87,11 @@ class OkHttpClientBuilder private constructor() : ClientRule {
             httpClient.cache(cache)
         }
 
+
+        override fun setFollowRedirects(allowRedirect: Boolean) {
+            httpClient.followRedirects(allowRedirect)
+        }
+
         fun setHead(hashMap: HashMap<String, String>) = this.apply {
             heads.clear()
             heads.putAll(hashMap)
@@ -115,6 +126,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         } else addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
 
         if (IS_NEED_COOKIE)  httpClient.cookieJar(CookieCaches(CookieManager.instance))
+        followRedirects(IS_REDIRECT_ALLOW)
         connectTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
         readTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
         writeTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
@@ -127,6 +139,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         getHttpClient().apply {
             val ssl = HttpsUtils.getSslSocketFactory()
             sslSocketFactory(ssl.sSLSocketFactory, ssl.trustManager)
+            followSslRedirects(IS_REDIRECT_ALLOW)
         }
     }
 
@@ -159,7 +172,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
 
 
     override fun setFollowRedirects(allowRedirect: Boolean) {
-        httpClient.followRedirects(allowRedirect)
+        IS_REDIRECT_ALLOW = allowRedirect
     }
 
 }

@@ -26,4 +26,6 @@ interface FactoryRule {
     fun setTimeOut(time: Long)
 
     fun setCookie(isNeed: Boolean)
+
+    fun setFollowRedirects(allowRedirect: Boolean)
 }
