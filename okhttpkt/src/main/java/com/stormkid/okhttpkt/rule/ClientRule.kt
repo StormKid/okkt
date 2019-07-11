@@ -13,4 +13,5 @@ interface ClientRule {
     fun setTimeOut(time:Long)
     fun isLogShow(boolean: Boolean)
     fun isNeedCookie(isNeed:Boolean)
+    fun setFollowRedirects(allowRedirect: Boolean)
 }

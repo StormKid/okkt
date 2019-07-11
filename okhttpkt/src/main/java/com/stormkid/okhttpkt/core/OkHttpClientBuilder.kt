@@ -99,7 +99,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         /**
          * 清理interceptors 防止重复添加
          */
-        this.interceptors().clear()
+        interceptors().clear()
         if (heads.size != 0) addInterceptor {
             val myhead = Headers.of(heads)
             val builder = it.request().newBuilder()
@@ -155,6 +155,11 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      */
     override fun isNeedCookie(isNeed: Boolean) {
         IS_NEED_COOKIE = isNeed
+    }
+
+
+    override fun setFollowRedirects(allowRedirect: Boolean) {
+        httpClient.followRedirects(allowRedirect)
     }
 
 }

@@ -169,6 +169,15 @@ class Okkt private constructor() {
 
 
     /**
+     * 是否需要重定向
+     */
+    fun isAllowRedirect(isNeed: Boolean): Okkt {
+        OkHttpClientBuilder.Builder.build().isNeedCookie(isNeed)
+        return this
+    }
+
+
+    /**
      * 设置主体url
      */
     fun setBase(url: String): Okkt {
