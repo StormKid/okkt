@@ -172,7 +172,7 @@ class Okkt private constructor() {
      * 是否需要重定向
      */
     fun isAllowRedirect(isNeed: Boolean): Okkt {
-        OkHttpClientBuilder.Builder.build().isNeedCookie(isNeed)
+        OkHttpClientBuilder.Builder.build().setFollowRedirects(isNeed)
         return this
     }
 
