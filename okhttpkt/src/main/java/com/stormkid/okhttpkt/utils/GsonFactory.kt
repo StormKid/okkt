@@ -9,11 +9,24 @@ GSON 工具
 @date 2018/5/28
  */
 object GsonFactory{
-    private val gson = GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd HH:mm:ss").create()
 
-    fun <T> formart(json: String, clazz: Class<out T>): T{
-        return gson.fromJson<T>(json, clazz)
+    private var builder = GsonBuilder()
+
+    fun setPrinting(){
+        builder.setPrettyPrinting()
     }
+
+    fun setDateFormat(vararg format:String){
+        if (format.isEmpty()) builder.setDateFormat("yyyy-MM-dd HH:mm:ss")
+        else builder.setDateFormat(format[0])
+    }
+
+    fun reBuild(){
+        builder = GsonBuilder()
+    }
+
+    private val gson = builder.create()
+
 
     fun <T> formart(json: String, type: Type): T {
         return gson.fromJson<T>(json, type)
