@@ -27,7 +27,7 @@ class TestCallback(private val callbackRule: TestCallbackRule) : Callback {
         var result = ""
         val heads = hashMapOf<String,String>()
         if (null!=response) {
-            result = response.body().toString()
+            result = response.body()?.string()?:""
             response.headers().names().forEach {
                 val value = response.headers().get(it)
                 heads[it] = value?:""
