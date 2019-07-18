@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity(),StringCallback {
         GsonFactory.setDateFormat()
         GsonFactory.setPrinting()
         Okkt.instance.Builder().setUrl("/part").get(this)
-        Okkt.instance.Builder().setUrl("/part").setParams(hashMapOf("id" to "what")).postJson(object:CallbackRule<String>{
+        Okkt.instance.Builder().setUrl("/part").setParams(hashMapOf("id" to "what")).postJson(object:
+            CallbackRule<String> {
             override suspend fun onSuccess(entity: String, flag: String) {
             }
 
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity(),StringCallback {
 
         } )
 
-        Okkt.instance.Builder().setFilePath("path").setFullUrl("http://xxxxxx").downLoad(applicationContext,object : ProGressRule{
+        Okkt.instance.Builder().setFilePath("path").setFullUrl("http://xxxxxx").downLoad(applicationContext,object :
+            ProGressRule {
             override suspend fun getProgress(progress: Int) {
             }
 
@@ -59,5 +61,15 @@ class MainActivity : AppCompatActivity(),StringCallback {
             }
 
         })
+
+//        Okkt.instance.TestBuilder().setUrl("http://www.baidu.com").testGet(object : TestCallbackRule{
+//            override suspend fun onResponse(response: TestCallbackRule.Response) {
+//                Log.w("response","${response.body.toString()}----${response.heads}")
+//            }
+//
+//            override suspend fun onErr(err: String) {
+//            }
+//
+//        })
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
+import android.text.TextUtils
 import com.google.gson.Gson
 import com.stormkid.okhttpkt.asyc.DownloadCallback
 import com.stormkid.okhttpkt.rule.*
@@ -145,7 +146,7 @@ class Okkt private constructor() {
     /**
      * 是否需要cookie
      */
-    fun isNeedCookie(isNeed:Boolean): Okkt {
+    fun isNeedCookie(isNeed: Boolean): Okkt {
         OkHttpClientBuilder.Builder.build().isNeedCookie(isNeed)
         return this
     }
@@ -198,24 +199,70 @@ class Okkt private constructor() {
         return this
     }
 
+    private fun initUrl(map: HashMap<String, String>) = "".let {
+        var onFirst = false
+        var result = ""
+        map.forEach {
+            if (onFirst) result += ("&${it.key}=${it.value}")
+            else {
+                onFirst = true
+                result += ("?${it.key}=${it.value}")
+            }
+        }
+        result
+    }
+    inner class TestBuilder {
+        private val data = BuildData()
 
-    inner class Builder {
-        private var url = ""
-        private val params = hashMapOf<String, String>()
-        private val body = hashMapOf<String, String>()
-        private var file = File("")
-        private var filePath = ""
-        private var fileNameKey = "file"
+        fun setUrl(url: String): TestBuilder {
+            data.url = url
+            return this
+        }
+
         /**
-         * 获取单独flag对象
+         * 传入url拼接属性
          */
-        private var flag = ""
+        fun setParams(params: HashMap<String, String>): TestBuilder {
+            data.params.clear()
+            data.params.putAll(params)
+            return this
+        }
+
+
+        fun putBody(params: HashMap<String, String>): TestBuilder {
+            data.body.clear()
+            data.body.putAll(params)
+            return this
+        }
+
+
+        fun testGet(call: TestCallbackRule) {
+            requestInit(data, GET_TYPE)?.enqueue(TestCallback(call))
+        }
+
+        fun testPost(call: TestCallbackRule) {
+            requestInit(data, POST_FORM_TYPE)?.enqueue(TestCallback(call))
+        }
+
+        fun testPostJson(call: TestCallbackRule) {
+            requestInit(data, POST_JSON_TYPE)?.enqueue(TestCallback(call))
+        }
+
+        fun testPostJson(json: String, call: TestCallbackRule) {
+            data.json = json
+            requestInit(data, POST_JSON_TYPE)?.enqueue(TestCallback(call))
+        }
+
+
+    }
+    inner class Builder {
+        private val data = BuildData()
 
         /**
          * 输入url
          */
         fun setUrl(url: String): Builder {
-            this.url = baseUrl + url
+            data.url = baseUrl + url
             return this
         }
 
@@ -223,7 +270,7 @@ class Okkt private constructor() {
          * 输入的全部url
          */
         fun setFullUrl(url: String): Builder {
-            this.url = url
+            data.url = url
             return this
         }
 
@@ -232,7 +279,7 @@ class Okkt private constructor() {
          * 获取独有的请求标识,多连接的时候进行回调处理
          */
         fun setFlag(flag: String): Builder {
-            this.flag = flag
+            data.flag = flag
             return this
         }
 
@@ -240,8 +287,8 @@ class Okkt private constructor() {
          * 输入请求body
          */
         fun putBody(params: HashMap<String, String>): Builder {
-            this.body.clear()
-            this.body.putAll(params)
+            data.body.clear()
+            data.body.putAll(params)
             return this
         }
 
@@ -249,12 +296,12 @@ class Okkt private constructor() {
          * 传入file
          */
         fun putFile(file: File): Builder {
-            this.file = file
+            data.file = file
             return this
         }
 
         fun setFilePath(filePath: String): Builder {
-            this.filePath = filePath
+            data.filePath = filePath
             return this
         }
 
@@ -262,7 +309,7 @@ class Okkt private constructor() {
          * 传入fileNameKey
          */
         fun putFileNameKey(key: String): Builder {
-            this.fileNameKey = key
+            data.fileNameKey = key
             return this
         }
 
@@ -271,83 +318,54 @@ class Okkt private constructor() {
          * 传入url拼接属性
          */
         fun setParams(params: HashMap<String, String>): Builder {
-            this.params.clear()
-            this.params.putAll(params)
+            data.params.clear()
+            data.params.putAll(params)
             return this
         }
 
-        private fun init(): Request.Builder {
-            val url = url + initUrl(params)
-            val request = Request.Builder().url(url)
-            return request
-        }
-
         ////////////////////////////////请求到 String ////////////////////////////////////////
-        fun getString(call: StringCallback){
-            val request = init().build()
-            getHttpClient().newCall(request).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        fun getString(call: StringCallback) {
+            requestInit(data, GET_TYPE)?.enqueue(OkStringCallback(call, CallbackNeed(data.flag, error)))
         }
 
-        fun  postString(call: StringCallback) {
-            val request = init()
-            val requestBody = FormBody.Builder().apply {
-                body.forEach { this.add(it.key, it.value) }
-            }.build()
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        fun postString(call: StringCallback) {
+            requestInit(data, POST_FORM_TYPE)?.enqueue(OkStringCallback(call, CallbackNeed(data.flag, error)))
         }
 
-        fun  postStringJson(call: StringCallback) {
-            val request = init()
-            val json = Gson().toJson(body)
-            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+        fun postStringJson(call: StringCallback) {
+            requestInit(data, POST_JSON_TYPE)?.enqueue(OkStringCallback(call, CallbackNeed(data.flag, error)))
         }
 
         fun postStringJson(json: String, call: StringCallback) {
-            val request = init()
-            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkStringCallback(call, CallbackNeed(flag, error)))
+            data.json = json
+            requestInit(data, POST_JSON_TYPE)?.enqueue(OkStringCallback(call, CallbackNeed(data.flag, error)))
         }
 
         ////////////////////////////////////////////普通请求///////////////////////////////////////////////////////
 
         fun <T> get(call: CallbackRule<T>) {
-            val request = init().build()
-            getHttpClient().newCall(request).enqueue(OkCallback(call, CallbackNeed(flag, error)))
+            requestInit(data, GET_TYPE)?.enqueue(OkCallback(call, CallbackNeed(data.flag, error)))
         }
 
         fun <T> post(call: CallbackRule<T>) {
-            val request = init()
-            val requestBody = FormBody.Builder().apply {
-                body.forEach { this.add(it.key, it.value) }
-            }.build()
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkCallback(call, CallbackNeed(flag, error)))
+            requestInit(data, POST_FORM_TYPE)?.enqueue(OkCallback(call, CallbackNeed(data.flag, error)))
         }
 
         fun <T> postJson(call: CallbackRule<T>) {
-            val request = init()
-            val json = Gson().toJson(body)
-            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkCallback(call, CallbackNeed(flag, error)))
+            requestInit(data, POST_JSON_TYPE)?.enqueue(OkCallback(call, CallbackNeed(data.flag, error)))
         }
 
         fun <T> postJson(json: String, call: CallbackRule<T>) {
-            val request = init()
-            val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-            getHttpClient().newCall(request.post(requestBody).build()).enqueue(OkCallback(call, CallbackNeed(flag, error)))
+            data.json = json
+            requestInit(data, POST_JSON_TYPE)?.enqueue(OkCallback(call, CallbackNeed(data.flag, error)))
         }
 
         /**
          * 直传文件
          */
         fun <T> postFile(call: CallbackRule<T>) {
-            val request = init()
-            if (file.exists()) {
-                val multipartBody = initFileBody(body).build()
-//                val resultBody = FileResuestBody(multipartBody,call)
-                setTimeOut(60000)
-                getFactoryClient().newCall(request.post(multipartBody).build()).enqueue(OkCallback(call, CallbackNeed(flag, error)))
-            }
+            requestInit(data, FILE_UPLOAD)?.enqueue(OkCallback(call, CallbackNeed(data.flag, error)))
+
         }
 
 
@@ -355,44 +373,68 @@ class Okkt private constructor() {
          * 下载文件
          */
         fun downLoad(context: Context, proGressRule: ProGressRule) {
-            val request = init()
-            val fileCallbackNeed = FileCallbackNeed(filePath, context, 0)
+            val url = data.url + initUrl(data.params)
+            val request = Request.Builder().url(url)
+            val fileCallbackNeed = FileCallbackNeed(data.filePath, context, 0)
             runBlocking { launch(Dispatchers.Main) { proGressRule.onStartRequest() } }
             setTimeOut(60000)
             getFactoryClient().newBuilder().addNetworkInterceptor { chain ->
                 val response = chain.proceed(chain.request())
                 val body = FileResponseBody(response.body()!!, fileCallbackNeed, proGressRule)
                 response.newBuilder().body(body).build()
-            }.build().newCall(request.build()).enqueue(com.stormkid.okhttpkt.asyc.DownloadManager(fileCallbackNeed, proGressRule))
+            }.build().newCall(request.build())
+                .enqueue(com.stormkid.okhttpkt.asyc.DownloadManager(fileCallbackNeed, proGressRule))
         }
 
+    }
 
-        private fun initUrl(map: HashMap<String, String>) = "".let {
-            var onFirst = false
-            var result = ""
-            map.forEach {
-                if (onFirst) result += ("&${it.key}=${it.value}")
-                else {
-                    onFirst = true
-                    result += ("?${it.key}=${it.value}")
-                }
+
+
+    private val GET_TYPE = "GET_TYPE"
+    private val POST_FORM_TYPE = "POST_TYPE"
+    private val POST_JSON_TYPE = "POST_JSON_TYPE"
+    private val FILE_UPLOAD = "FILE_UPLOAD"
+
+    private fun requestInit(data: BuildData, type: String): Call? {
+        val url = data.url + initUrl(data.params)
+        val builder = Request.Builder().url(url)
+        return when (type) {
+            GET_TYPE -> {
+                val request = builder.build()
+                getHttpClient().newCall(request)
             }
-            result
-        }
-
-        private fun initFileBody(map: HashMap<String, String>): MultipartBody.Builder = MultipartBody.Builder().setType(MultipartBody.FORM).apply {
-            map.forEach {
-                this.addFormDataPart(it.key, it.value)
+            POST_FORM_TYPE -> {
+                val requestBody = FormBody.Builder().apply {
+                    data.body.forEach { this.add(it.key, it.value) }
+                }.build()
+                getHttpClient().newCall(builder.post(requestBody).build())
             }
-            this.addFormDataPart(fileNameKey, file.name, MultipartBody.create(MultipartBody.FORM, file))
-        }
+            POST_JSON_TYPE -> {
+                val json = if (TextUtils.isEmpty(data.json)) Gson().toJson(data.body) else data.json
+                val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
+                getHttpClient().newCall(builder.post(requestBody).build())
+            }
 
+            FILE_UPLOAD->{
+                if (data.file.exists()) {
+                    val body =   MultipartBody.Builder().setType(MultipartBody.FORM).apply {
+                        data.body.forEach { addFormDataPart(it.key, it.value) }
+                        addFormDataPart(data.fileNameKey, data.file.name, MultipartBody.create(MultipartBody.FORM, data.file))
+                    }
+                    val multipartBody = body.build()
+                    setTimeOut(60000)
+                    getFactoryClient().newCall(builder.post(multipartBody).build())
+                }else null
+            }
+
+            else -> null
+        }
     }
 
     /**
      * 系统下载器下载文件
      */
-    fun download(url: String, title: String, desc: String, context: Context,downLoadRule: DownLoadRule) = let {
+    fun download(url: String, title: String, desc: String, context: Context, downLoadRule: DownLoadRule) = let {
         val uri = Uri.parse(url)
         val req = DownloadManager.Request(uri).apply {
             //设置WIFI下进行更新
@@ -415,7 +457,7 @@ class Okkt private constructor() {
         context.registerReceiver(DownloadCallback(downLoadRule), IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         try {
             dm.enqueue(req)
-        }catch (exception:Exception){
+        } catch (exception: Exception) {
             downLoadRule.onNetErr()
             -1L
         }
@@ -430,6 +472,21 @@ class Okkt private constructor() {
 
         }
     }
+
+
+    /**
+     *  请求必初始化的data
+     */
+    private data class BuildData(
+        var body: HashMap<String, String> = hashMapOf(),
+        var params: HashMap<String, String> = hashMapOf(),
+        var url: String = "",
+        var json: String = "",
+        var file: File = File(""),
+        var filePath: String = "",
+        var fileNameKey: String = "file",
+        var flag: String = ""
+    )
 
 
 }
