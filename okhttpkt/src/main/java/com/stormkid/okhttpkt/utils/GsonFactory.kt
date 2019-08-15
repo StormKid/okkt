@@ -29,7 +29,7 @@ object GsonFactory{
 
 
     fun <T> formart(json: String, type: Type): T {
-        return gson.fromJson<T>(json, type)
+        return gson.fromJson(json, type)
     }
 
     fun toJson(body:Any)=let {

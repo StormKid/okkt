@@ -7,6 +7,6 @@ import android.content.Context
 @author ke_li
 @date 2018/5/25
  */
-data class CallbackNeed (val flag :String, val err_msg:String)
+data class CallbackNeed(val flag: String, val err_msg: String)
 
-data class FileCallbackNeed(val selfPath:String,val context: Context,var initTotal:Long)
+data class FileCallbackNeed(val selfPath: String, val context: Context, var initTotal: Long)

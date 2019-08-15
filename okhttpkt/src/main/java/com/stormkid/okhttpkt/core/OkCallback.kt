@@ -1,9 +1,9 @@
 package com.stormkid.okhttpkt.core
 
-import android.util.Log
 import com.stormkid.okhttpkt.rule.CallbackRule
 import com.stormkid.okhttpkt.utils.CallbackNeed
 import com.stormkid.okhttpkt.utils.GsonFactory
+import com.stormkid.okhttpkt.utils.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -42,7 +42,7 @@ class OkCallback<T>(private val callbackRule: CallbackRule<T>, private val need:
                         val result = GsonFactory.formart<T>(body, resultType[0])
                         runBlocking {  launch(Dispatchers.Main){ callbackRule.onSuccess(result, need.flag)}}
                    }catch (e:Exception){
-                        Log.e("typeEER",e.message)
+                        Log.e("typeEER",e.message?:"")
                         runBlocking{  launch(Dispatchers.Main){ callbackRule.onFailed("数据服务异常，请联系管理员") }  }
                         return
                     }

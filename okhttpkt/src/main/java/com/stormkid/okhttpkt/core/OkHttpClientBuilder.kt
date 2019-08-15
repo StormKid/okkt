@@ -5,6 +5,7 @@ import com.stormkid.okhttpkt.cache.CookieManager
 import com.stormkid.okhttpkt.rule.ClientRule
 import com.stormkid.okhttpkt.rule.FactoryRule
 import com.stormkid.okhttpkt.utils.HttpsUtils
+import com.stormkid.okhttpkt.utils.Log
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -48,47 +49,88 @@ class OkHttpClientBuilder private constructor() : ClientRule {
      */
     object Builder : FactoryRule {
 
-        override fun setCookie(isNeed: Boolean) {
-            if (isNeed)
-            httpClient.cookieJar(CookieCaches(CookieManager.instance))
+        /**
+         * 清理拦截器
+         */
+        override fun cleanInterceptor() = this.apply {
+            httpClient.interceptors().clear()
         }
 
-        override fun setTimeOut(time: Long) {
+        /**
+         * 添加cookie
+         */
+        override fun setCookie(isNeed: Boolean) = this.apply {
+            if (isNeed)
+                httpClient.cookieJar(CookieCaches(CookieManager.instance))
+        }
+
+        /**
+         *  设置超时时间
+         */
+        override fun setTimeOut(time: Long) = this.apply{
             httpClient.readTimeout(time, TimeUnit.MILLISECONDS)
             httpClient.writeTimeout(time, TimeUnit.MILLISECONDS)
             httpClient.readTimeout(time, TimeUnit.MILLISECONDS)
         }
 
-        override fun addInterceptor(interceptor: Interceptor): FactoryRule = this.apply {
+        /**
+         * 添加拦截器
+         */
+         fun addInterceptor(interceptor: Interceptor) = this.apply {
             httpClient.addInterceptor(interceptor)
         }
 
-        override fun addNetworkInterceptor(interceptor: Interceptor): FactoryRule = this.apply {
+        /**
+         * 添加请求拦截器
+         */
+         fun addNetworkInterceptor(interceptor: Interceptor) = this.apply {
             httpClient.addNetworkInterceptor(interceptor)
         }
 
-        override fun writeTimeOut(time: Long): FactoryRule = this.apply {
+        /**
+         *  只添加写入时间
+         */
+        override fun writeTimeOut(time: Long) = this.apply {
             httpClient.writeTimeout(time, TimeUnit.MILLISECONDS)
         }
 
-        override fun socketFactory(socketFactory: SocketFactory): FactoryRule = this.apply {
+        /**
+         *  添加socket 请求
+         */
+        override fun socketFactory(socketFactory: SocketFactory) = this.apply {
             httpClient.socketFactory(socketFactory)
         }
 
-        override fun SSLSocketFactory(sslSocketFactory: SSLSocketFactory, x509TrustManager: X509TrustManager): FactoryRule = this.apply {
+        /**
+         * 自定义添加请求认证证书
+         */
+        override fun SSLSocketFactory(
+            sslSocketFactory: SSLSocketFactory,
+            x509TrustManager: X509TrustManager
+        ) = this.apply {
             httpClient.sslSocketFactory(sslSocketFactory, x509TrustManager)
         }
 
-        override fun dns(dns: Dns): FactoryRule = this.apply {
+        /**
+         * TODO 添加Dns 过滤
+         */
+         fun dns(dns: Dns) = this.apply {
             httpClient.dns(dns)
         }
 
-        override fun cache(cache: Cache): FactoryRule = this.apply {
+
+        /**
+         * TODO 添加缓存处理
+         */
+        fun cache(cache: Cache) = this.apply {
             httpClient.cache(cache)
         }
 
 
-        override fun setFollowRedirects(allowRedirect: Boolean) {
+        /**
+         * 配置是否重定向
+         */
+        override fun setFollowRedirects(allowRedirect: Boolean) = this.apply {
             httpClient.followRedirects(allowRedirect)
         }
 
@@ -98,7 +140,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         }
 
         fun build(): OkHttpClientBuilder {
-            return OkHttpClientBuilder.instance
+            return instance
         }
     }
 
@@ -119,13 +161,17 @@ class OkHttpClientBuilder private constructor() : ClientRule {
 
         if (showLog) {
             addInterceptor {
-                android.util.Log.i("okhttpUrl", it.request().url().toString())
+                Log.setEnable(true)
+                Log.i("okhttpUrl", it.request().url().toString())
                 it.proceed(it.request())
             }
             addInterceptor(HttpLoggingInterceptor().setLevel(logBody))
-        } else addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
+        } else {
+            Log.setEnable(false)
+            addInterceptor(HttpLoggingInterceptor().setLevel(logNone))
+        }
 
-        if (IS_NEED_COOKIE)  httpClient.cookieJar(CookieCaches(CookieManager.instance))
+        if (IS_NEED_COOKIE) httpClient.cookieJar(CookieCaches(CookieManager.instance))
         followRedirects(IS_REDIRECT_ALLOW)
         connectTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
         readTimeout(ERR_TIME, TimeUnit.MILLISECONDS)
