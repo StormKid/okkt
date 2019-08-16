@@ -73,6 +73,7 @@ class OkWebsocket private constructor() {
         fun setUrl(path: String) = this.apply {
             url = path
         }
+        fun  build() = this@OkWebsocket
     }
 
 
