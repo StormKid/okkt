@@ -73,20 +73,17 @@ class OkWebsocket private constructor() {
         fun setUrl(path: String) = this.apply {
             url = path
         }
-        fun  build() = this@OkWebsocket
+
+        fun build() = this@OkWebsocket
     }
 
 
-    fun <T>startSocket(websocketCallbackRule: WebsocketCallbackRule<T>) {
-        try {
-            if (configCount < 2) throw Exception("There must init log and connect timeout")
-        } catch (e: Exception) {
-            android.util.Log.e("err", e.message)
-            return
-        }
+    fun <T> startSocket(websocketCallbackRule: WebsocketCallbackRule<T>) {
+        if (configCount < 2) throw RuntimeException("There must init log and connect timeout")
         val customnClient = builder.build().getCustomnClient().build()
         val build = request.url(url).build()
         websocket = customnClient.newWebSocket(build, OkSocketCallback(websocketCallbackRule))
+        customnClient.dispatcher().executorService().shutdown()
     }
 
 
@@ -95,6 +92,7 @@ class OkWebsocket private constructor() {
         if (websocket != null) {
             runBlocking {
                 launch(Dispatchers.IO) {
+                    Log.w(json)
                     websocket?.send(json)
                 }
             }

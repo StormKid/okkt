@@ -71,9 +71,15 @@ class MainActivity : AppCompatActivity(),StringCallback {
 //
 //        })
 
+
+//        val url = "ws://echo.websocket.org"
+        val url = "ws://10.0.2.2:8100"
+
+
         click.setOnClickListener {
             OkWebsocket.instance.Config().setTimeOut(150000).showLog(true)
-            OkWebsocket.instance.Builder().setUrl("http://10.0.0.2:8100").build().startSocket(object : WebsocketCallbackRule<String>{
+            OkWebsocket.instance.Builder().setUrl(url).build().startSocket(object :
+                WebsocketCallbackRule<String> {
                 override suspend fun onMessageSuccess(massage: String) {
                     Log.w(massage)
                     click.text = massage
@@ -86,6 +92,11 @@ class MainActivity : AppCompatActivity(),StringCallback {
                 }
 
             })
+
+        }
+
+        click_out.setOnClickListener {
+            OkWebsocket.instance.sendMsg(hashMapOf("massage" to "PPPPPP"))
         }
     }
 }

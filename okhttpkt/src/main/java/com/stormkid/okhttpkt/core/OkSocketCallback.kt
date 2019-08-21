@@ -20,7 +20,7 @@ import java.lang.reflect.ParameterizedType
 class OkSocketCallback<T>(private val callbackRule: WebsocketCallbackRule<T>) : WebSocketListener(){
     override fun onOpen(webSocket: WebSocket, response: Response) {
         super.onOpen(webSocket, response)
-        webSocket.send("message")
+        webSocket.send("{'massage':'666666666'}")
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
