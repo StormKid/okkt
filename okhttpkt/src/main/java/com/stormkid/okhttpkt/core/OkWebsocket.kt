@@ -32,15 +32,24 @@ class OkWebsocket private constructor() {
 
 
     inner class Config {
+        /**
+         * 设置超时
+         */
         fun setTimeOut(time: Long) = apply {
             builder.setTimeOut(time)
             configCount += 1
         }
 
+        /**
+         * 是否需要cookie manager处理cookie
+         */
         fun setCookie(isNeed: Boolean) = apply {
             builder.setCookie(isNeed)
         }
 
+        /**
+         * 显示log
+         */
         fun showLog(isNeed: Boolean) = apply {
             if (isNeed) {
                 builder.addInterceptor(Interceptor {
@@ -56,10 +65,16 @@ class OkWebsocket private constructor() {
             configCount += 1
         }
 
+        /**
+         * 是否重定向
+         */
         fun setFollowed(isNeed: Boolean) = apply {
             builder.setFollowRedirects(isNeed)
         }
 
+        /**
+         * 设置请求头
+         */
         fun setHead(headers: HashMap<String, String>) = apply {
             builder.setHead(headers)
         }
