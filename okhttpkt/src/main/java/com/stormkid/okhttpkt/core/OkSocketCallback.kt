@@ -9,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okio.ByteString
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -20,7 +19,6 @@ import java.lang.reflect.ParameterizedType
 class OkSocketCallback<T>(private val callbackRule: WebsocketCallbackRule<T>) : WebSocketListener(){
     override fun onOpen(webSocket: WebSocket, response: Response) {
         super.onOpen(webSocket, response)
-        webSocket.send("{'massage':'666666666'}")
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
@@ -41,14 +39,10 @@ class OkSocketCallback<T>(private val callbackRule: WebsocketCallbackRule<T>) : 
             runBlocking {  launch(Dispatchers.Main){ callbackRule.onMessageSuccess(result)}}
         }catch (e:Exception){
             Log.e("typeEER",e.message?:"")
-            runBlocking{  launch(Dispatchers.Main){ callbackRule.onSocketDrop("数据服务异常，请联系管理员") }  }
             webSocket.cancel()
+            runBlocking{  launch(Dispatchers.Main){ callbackRule.onSocketDrop("数据服务异常，请联系管理员") }  }
             return
         }
-    }
-
-    override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        super.onMessage(webSocket, bytes)
     }
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {

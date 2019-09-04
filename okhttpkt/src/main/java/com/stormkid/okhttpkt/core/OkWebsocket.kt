@@ -92,7 +92,6 @@ class OkWebsocket private constructor() {
         if (websocket != null) {
             runBlocking {
                 launch(Dispatchers.IO) {
-                    Log.w(json)
                     websocket?.send(json)
                 }
             }

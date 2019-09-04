@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import com.stormkid.okhttpkt.core.OkWebsocket
 import com.stormkid.okhttpkt.rule.StringCallback
 import com.stormkid.okhttpkt.rule.WebsocketCallbackRule
-import com.stormkid.okhttpkt.utils.Log
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),StringCallback {
@@ -81,7 +80,6 @@ class MainActivity : AppCompatActivity(),StringCallback {
             OkWebsocket.instance.Builder().setUrl(url).build().startSocket(object :
                 WebsocketCallbackRule<String> {
                 override suspend fun onMessageSuccess(massage: String) {
-                    Log.w(massage)
                     click.text = massage
                 }
 
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity(),StringCallback {
         }
 
         click_out.setOnClickListener {
-            OkWebsocket.instance.sendMsg(hashMapOf("massage" to "PPPPPP"))
+            OkWebsocket.instance.sendMsg(hashMapOf("event" to "message"))
         }
     }
 }
