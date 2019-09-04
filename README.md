@@ -1,5 +1,5 @@
 # okhttpkt
-[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.7.1) ](https://bintray.com/stokid/library/okhttpkt/1.0.8/link)
+[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.8) ](https://bintray.com/stokid/library/okhttpkt/1.0.8/link)
 
 ![img](readme/OKKT.jpg)
 
