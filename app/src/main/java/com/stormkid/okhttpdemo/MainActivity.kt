@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity(),StringCallback {
         setContentView(R.layout.activity_main)
 //        GsonFactory.setDateFormat()
 //        GsonFactory.setPrinting()
-//        Okkt.instance.Builder().setUrl("/part").get(this)
-//        Okkt.instance.Builder().setUrl("/part").setParams(hashMapOf("id" to "what")).postJson(object:
+//        Okkt4j.instance.Builder().setUrl("/part").get(this)
+//        Okkt4j.instance.Builder().setUrl("/part").setParams(hashMapOf("id" to "what")).postJson(object:
 //            CallbackRule<String> {
 //            override suspend fun onSuccess(entity: String, flag: String) {
 //            }
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(),StringCallback {
 //
 //        })
 //
-//        Okkt.instance.Builder().setUrl("/part").putFileNameKey("file").putFile(externalCacheDir!!).postFile(object :CallbackRule<Any>{
+//        Okkt4j.instance.Builder().setUrl("/part").putFileNameKey("file").putFile(externalCacheDir!!).postFile(object :CallbackRule<Any>{
 //            override suspend fun onSuccess(entity: Any, flag: String) {
 //            }
 //
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(),StringCallback {
 //
 //        } )
 //
-//        Okkt.instance.Builder().setFilePath("path").setFullUrl("http://xxxxxx").downLoad(applicationContext,object :
+//        Okkt4j.instance.Builder().setFilePath("path").setFullUrl("http://xxxxxx").downLoad(applicationContext,object :
 //            ProGressRule {
 //            override suspend fun getProgress(progress: Int) {
 //            }
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(),StringCallback {
 //
 //        })
 
-//        Okkt.instance.TestBuilder().setUrl("http://www.baidu.com").testGet(object : TestCallbackRule{
+//        Okkt4j.instance.TestBuilder().setUrl("http://www.baidu.com").testGet(object : TestCallbackRule{
 //            override suspend fun onResponse(response: TestCallbackRule.Response) {
 //                Log.w("response","${response.body.toString()}----${response.heads}")
 //            }

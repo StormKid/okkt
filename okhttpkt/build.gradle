@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-ext.public_version = "1.0.8"
+ext.public_version = "1.0.9"
 android {
     compileSdkVersion 28
 
