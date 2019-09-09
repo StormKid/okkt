@@ -1,5 +1,5 @@
 # okhttpkt
-[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.8) ](https://bintray.com/stokid/library/okhttpkt/1.0.8/link)
+[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.9) ](https://bintray.com/stokid/library/okhttpkt/1.0.9/link)
 
 ![img](readme/OKKT.jpg)
 
@@ -16,11 +16,13 @@
 
 **5、拥有工厂模式与单例模式的config方式，甚至扩展了一个接口用来自定义自己的client做自定义解决方式**
 
+**6、新增java api**
+
 ## 简单案例：
 
 ### 使用前提导入：
 ```gradle
-implementation 'com.stormkid:okhttpkt:1.0.8'
+implementation 'com.stormkid:okhttpkt:1.0.9'
 ```
 
 ### 1、全局注册
