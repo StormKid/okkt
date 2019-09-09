@@ -49,12 +49,6 @@ public class OkCallback<T> implements Callback {
                         ParameterizedType interfacesTypes = (ParameterizedType)genericInterfaces[0];
                         Type[] resultType = interfacesTypes.getActualTypeArguments();
                         final T result = GsonFactory.INSTANCE.formart(body, resultType[0]);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callbackRule.onSuccess(result, need.getErr_msg());
-                            }
-                        });
                         putMainThread(true, result, need.getFlag());
                     }catch (Exception e){
                         Log.e("typeEER",e.getMessage());
