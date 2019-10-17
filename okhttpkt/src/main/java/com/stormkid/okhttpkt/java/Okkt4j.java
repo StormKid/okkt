@@ -233,7 +233,7 @@ public class Okkt4j {
         for (String key :
                 keySet) {
             String s = map.get(key);
-            if (first) result += "$" + key + "=" + s;
+            if (first) result += "&" + key + "=" + s;
             else {
                 first = true;
                 result += "?" + key + "=" + s;
