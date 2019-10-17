@@ -1,5 +1,5 @@
 # okhttpkt
-[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.9.1) ](https://bintray.com/stokid/library/okhttpkt/1.0.9.1/link)
+[ ![Version](https://api.bintray.com/packages/stokid/library/okhttpkt/images/download.svg?version=1.0.9.2) ](https://bintray.com/stokid/library/okhttpkt/1.0.9.2/link)
 
 ![img](readme/OKKT.jpg)
 
@@ -20,7 +20,7 @@
 
 ### 使用前提导入：
 ```gradle
-implementation 'com.stormkid:okhttpkt:1.0.9.1'
+implementation 'com.stormkid:okhttpkt:1.0.9.2'
 ```
 
 ### 1、全局注册
