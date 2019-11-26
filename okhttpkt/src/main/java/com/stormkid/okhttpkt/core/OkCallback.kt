@@ -42,7 +42,7 @@ class OkCallback<T>(private val callbackRule: CallbackRule<T>, private val need:
                         val result = GsonFactory.formart<T>(body, resultType[0])
                         runBlocking {  launch(Dispatchers.Main){ callbackRule.onSuccess(result, need.flag)}}
                    }catch (e:Exception){
-                        Log.e("typeEER",e.message?:"")
+                        Log.e(e.message?:"")
                         runBlocking{  launch(Dispatchers.Main){ callbackRule.onFailed("数据服务异常，请联系管理员") }  }
                         return
                     }

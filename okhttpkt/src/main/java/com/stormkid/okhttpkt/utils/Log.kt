@@ -1,6 +1,7 @@
 package com.stormkid.okhttpkt.utils
 
 import android.util.Log
+import com.stormkid.okhttpkt.BuildConfig
 
 /**
 自定义logger
@@ -9,7 +10,8 @@ import android.util.Log
  */
 object Log {
     private const val APP_LOGGER = "APP_LOGGER"
-    private var isEnable = false
+    // 默认log 显示跟随系统 如果是debug 环境，那么就显示log ，如果不是debug 环境，那么就隐藏log
+    private var isEnable = BuildConfig.LOG_SHOW
 
     fun setEnable(isEnable: Boolean){
         this.isEnable = isEnable
