@@ -52,7 +52,7 @@ class FileResponseBody(private val responseBody: ResponseBody,private val fileCa
         percent.toInt()
 
     }
-    override fun source(): BufferedSource = Okio.buffer(source(responseBody.source()))
+    override fun source(): BufferedSource = source(responseBody.source()).buffer()
 
     /**
      * 直传下载

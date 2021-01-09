@@ -10,11 +10,13 @@ import okhttp3.HttpUrl
 @date 2019/6/28
  */
 class CookieCaches (private val cookieManager: CookieManager) : CookieJar{
-    override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
-        cookieManager.add(url,cookies)
-    }
 
     override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
        return cookieManager.get(url)
     }
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookieManager.add(url,cookies)
+    }
+
 }

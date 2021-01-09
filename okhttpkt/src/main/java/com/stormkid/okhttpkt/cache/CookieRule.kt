@@ -13,7 +13,7 @@ interface CookieRule {
     fun add(httpUrl: HttpUrl, cookie: Cookie)
 
     /** 添加指定httpurl cookie集合 */
-    fun add(httpUrl: HttpUrl, cookies: MutableList<Cookie>)
+    fun add(httpUrl: HttpUrl, cookies: List<Cookie>)
 
     /** 根据HttpUrl从缓存中读取cookie集合 */
     fun get(httpUrl: HttpUrl):MutableList<Cookie>

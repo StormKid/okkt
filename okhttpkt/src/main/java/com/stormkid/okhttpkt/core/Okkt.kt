@@ -16,6 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 /**
@@ -380,7 +383,7 @@ class Okkt private constructor() {
             setTimeOut(60000)
             getFactoryClient().newBuilder().addNetworkInterceptor { chain ->
                 val response = chain.proceed(chain.request())
-                val body = FileResponseBody(response.body()!!, fileCallbackNeed, proGressRule)
+                val body = FileResponseBody(response.body!!, fileCallbackNeed, proGressRule)
                 response.newBuilder().body(body).build()
             }.build().newCall(request.build())
                 .enqueue(com.stormkid.okhttpkt.asyc.DownloadManager(fileCallbackNeed, proGressRule))
@@ -411,7 +414,7 @@ class Okkt private constructor() {
             }
             POST_JSON_TYPE -> {
                 val json = if (TextUtils.isEmpty(data.json)) Gson().toJson(data.body) else data.json
-                val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
+                val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
                 getHttpClient().newCall(builder.post(requestBody).build())
             }
 
@@ -419,7 +422,7 @@ class Okkt private constructor() {
                 if (data.file.exists()) {
                     val body =   MultipartBody.Builder().setType(MultipartBody.FORM).apply {
                         data.body.forEach { addFormDataPart(it.key, it.value) }
-                        addFormDataPart(data.fileNameKey, data.file.name, MultipartBody.create(MultipartBody.FORM, data.file))
+                        addFormDataPart(data.fileNameKey, data.file.name, data.file.asRequestBody(MultipartBody.FORM))
                     }
                     val multipartBody = body.build()
                     setTimeOut(60000)

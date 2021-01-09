@@ -16,7 +16,7 @@ class FileResuestBody (private val requestBody: RequestBody,private val proGress
 
     override fun writeTo(sink: BufferedSink) {
         if (bufferedSink == null){
-            bufferedSink = Okio.buffer(sink)
+            bufferedSink = sink.buffer
         }
         requestBody.writeTo(bufferedSink!!)
         bufferedSink?.flush()

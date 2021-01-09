@@ -54,7 +54,7 @@ class OkWebsocket private constructor() {
             if (isNeed) {
                 builder.addInterceptor(Interceptor {
                     Log.setEnable(true)
-                    Log.i("okhttpUrl", it.request().url().toString())
+                    Log.i("okhttpUrl", it.request().url.toString())
                     it.proceed(it.request())
                 })
                 builder.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -98,7 +98,7 @@ class OkWebsocket private constructor() {
         val customnClient = builder.build().getCustomnClient().build()
         val build = request.url(url).build()
         websocket = customnClient.newWebSocket(build, OkSocketCallback(websocketCallbackRule))
-        customnClient.dispatcher().executorService().shutdown()
+        customnClient.dispatcher.executorService.shutdown()
     }
 
 

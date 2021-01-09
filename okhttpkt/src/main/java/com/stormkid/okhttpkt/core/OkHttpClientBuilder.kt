@@ -7,6 +7,7 @@ import com.stormkid.okhttpkt.rule.FactoryRule
 import com.stormkid.okhttpkt.utils.HttpsUtils
 import com.stormkid.okhttpkt.utils.Log
 import okhttp3.*
+import okhttp3.Headers.Companion.toHeaders
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import javax.net.SocketFactory
@@ -154,7 +155,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
          */
         interceptors().clear()
         if (heads.size != 0) addInterceptor {
-            val myhead = Headers.of(heads)
+            val myhead = heads.toHeaders()
             val builder = it.request().newBuilder()
             it.proceed(builder.headers(myhead).build())
         }
@@ -162,7 +163,7 @@ class OkHttpClientBuilder private constructor() : ClientRule {
         if (showLog) {
             addInterceptor {
                 Log.setEnable(true)
-                Log.i("okhttpUrl", it.request().url().toString())
+                Log.i("okhttpUrl", it.request( ).url.toString())
                 it.proceed(it.request())
             }
             addInterceptor(HttpLoggingInterceptor().setLevel(logBody))

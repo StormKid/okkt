@@ -21,7 +21,7 @@ class CookieManager private constructor() : CookieRule {
     }
 
     override fun add(httpUrl: HttpUrl, cookie: Cookie) {
-        if (!cookie.persistent()) return
+        if (!cookie.persistent) return
         val hostKey = doHost(httpUrl)
         val nameKey = doName(cookie) ?: return
         if (!cookies.containsKey(hostKey)) {
@@ -30,7 +30,7 @@ class CookieManager private constructor() : CookieRule {
         cookies[hostKey]?.set(nameKey, cookie)
     }
 
-    override fun add(httpUrl: HttpUrl, cookies: MutableList<Cookie>) {
+    override fun add(httpUrl: HttpUrl, cookies: List<Cookie>) {
         cookies.forEach {
             if (!isCookieTimeout(it))
                 add(httpUrl, it)
@@ -59,7 +59,7 @@ class CookieManager private constructor() : CookieRule {
     }
 
     fun isCookieTimeout(cookie: Cookie): Boolean {
-        return cookie.expiresAt() < System.currentTimeMillis()
+        return cookie.expiresAt < System.currentTimeMillis()
     }
 
     /**
@@ -68,7 +68,7 @@ class CookieManager private constructor() : CookieRule {
     fun getCookieValue(name: String): String {
         val cookies = getCookies()
         cookies.forEach {
-            if (it.name() == name) return it.value()
+            if (it.name == name) return it.value
         }
         return ""
     }
@@ -104,13 +104,13 @@ class CookieManager private constructor() : CookieRule {
 
 
     private fun doHost(httpUrl: HttpUrl) =
-        if (httpUrl.host().startsWith(COOKIE_HOST_KEY)) httpUrl.host()
-        else COOKIE_HOST_KEY + httpUrl.host()
+        if (httpUrl.host.startsWith(COOKIE_HOST_KEY)) httpUrl.host
+        else COOKIE_HOST_KEY + httpUrl.host
 
 
     private fun doName(cookie: Cookie?) =
         if (cookie == null) null
-        else cookie.name() + cookie.domain()
+        else cookie.name + cookie.domain
 
 
 }
